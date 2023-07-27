@@ -1,8 +1,6 @@
 package com.info.jwt;
-import java.util.Base64;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.info.entity.Users;
@@ -16,8 +14,7 @@ public class JwtUtil {
 	
 	private final String secret = "secret";
 	
-	@Value("${jwt.expirationTime}")
-	private long expirationTime;
+	private final long expirationTime = 5;
 	
 	/*---- jwt login token generation ----*/
 
