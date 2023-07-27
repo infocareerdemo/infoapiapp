@@ -6,4 +6,8 @@ import com.info.entity.Users;
 
 public interface UserRepository extends JpaRepository<Users, Integer> {
 
+	Users findByEmailIgnoreCase(String email);
+
+	Users findByEmail(String email);
+
 }
