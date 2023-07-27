@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class CustomHttpRequestInterceptor implements HandlerInterceptor {
 
-	private final String secret = "secret";
+	private final String secret = "secret";   
 
 	@Autowired
 	JwtUtil jwtUtil;
