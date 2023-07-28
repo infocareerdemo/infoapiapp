@@ -40,5 +40,12 @@ public class StockPriceRestController {
 		return new ResponseEntity<Object>(service.getAllStockPrice(pgNo, pgSize), HttpStatus.OK);
 
 	}
+	
+	@GetMapping("/tdcloseStk")
+	public ResponseEntity<Object> getAllStockPriceByTdclose(@RequestParam int tdclose,@RequestParam(defaultValue = "0") int pgNo,
+			@RequestParam(defaultValue = "10") int pgSize) {
+		return new ResponseEntity<Object>(service.getAllStockPriceByTdclose(pgNo, pgSize,tdclose), HttpStatus.OK);
+
+	}
 
 }

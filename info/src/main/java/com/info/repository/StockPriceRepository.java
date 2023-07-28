@@ -2,6 +2,8 @@ package com.info.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -18,12 +20,11 @@ public interface StockPriceRepository extends JpaRepository<StockPrice, Integer>
 
 	@Query(value = "SELECT * FROM stock_price where spsymbol=:spsymbolName and spinstrument='EQ' ", nativeQuery = true)
 	StockPrice getStockPricesByName(@Param(value = "spsymbolName") String spsymbolName);
-	
-	  @Query(value = "SELECT * FROM stock_price", nativeQuery = true)
-	  List<StockPrice> listAllStockPricesObjectDatatype();
-	  
-	  
-	 
- 
-	  
+
+	@Query(value = "SELECT * FROM stock_price", nativeQuery = true)
+	List<StockPrice> listAllStockPricesObjectDatatype();
+
+	@Query(value = "select * from stock_price sp where tdclose <= :tdclose",nativeQuery = true)
+	Slice<StockPrice> findAllByTdcloseLesserThen(@Param(value = "tdclose") int tdclose,Pageable pageable);
+
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import com.info.entity.StockPrice;
@@ -16,7 +17,6 @@ public class StockPriceService {
 
 	@Autowired(required = false)
 	private StockPriceRepository stockPriceRepository;
-
 
 	public StockPrice listAllStockPrices(int spid) {
 		return stockPriceRepository.listAllStockPrices(spid);
@@ -35,6 +35,15 @@ public class StockPriceService {
 		Pageable pageable = PageRequest.of(pgNo, pgSize);
 		Page<StockPrice> stk = stockPriceRepository.findAll(pageable);
 		return stk.getContent();
+
+	}
+
+	public List<StockPrice> getAllStockPriceByTdclose(int pgNo, int pgSize, int tdclose) {
+
+		Pageable pageable = PageRequest.of(pgNo, pgSize);
+		Slice<StockPrice> stk = stockPriceRepository.findAllByTdcloseLesserThen(tdclose, pageable);
+		List<StockPrice> tdCls = stk.getContent();
+		return tdCls;
 
 	}
 
