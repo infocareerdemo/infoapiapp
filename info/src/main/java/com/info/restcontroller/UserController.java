@@ -1,5 +1,7 @@
 package com.info.restcontroller;
 
+import java.io.UnsupportedEncodingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import com.info.entity.Users;
 import com.info.repository.UserRepository;
 import com.info.service.UserService;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -28,7 +31,7 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	UserRepository userRepository;
 
@@ -46,7 +49,7 @@ public class UserController {
 	public ResponseEntity<Object> getMyAccount() {
 		return new ResponseEntity<Object>(userService.getMyAccount(), HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/login")
 	public ResponseEntity<Object> validateLogin(@RequestBody LoginDto loginDto, HttpServletRequest response,
 			HttpSession session) {
@@ -86,4 +89,26 @@ public class UserController {
 
 		return ResponseEntity.ok(responseMsg);
 	}
+
+	@PostMapping("/register")
+	public String processRegister(@RequestBody Users user, HttpServletRequest request)
+			throws UnsupportedEncodingException, MessagingException {
+		userService.registerUser(user, getSiteURL(request));
+		return "Successfully Registered";
+	}
+
+	private String getSiteURL(HttpServletRequest request) {
+		String siteURL = request.getRequestURL().toString();
+		return siteURL.replace(request.getServletPath(), "");
+	}
+
+	@PostMapping("/verify")
+	public String verifyUser(@RequestParam String code) {
+		if (userService.verify(code)) {
+			return "Successfully verified";
+		} else {
+			return "Verification failed";
+		}
+	}
+
 }

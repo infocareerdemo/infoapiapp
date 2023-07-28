@@ -21,6 +21,8 @@ public interface StockPriceRepository extends JpaRepository<StockPrice, Integer>
 	
 	  @Query(value = "SELECT * FROM stock_price", nativeQuery = true)
 	  List<StockPrice> listAllStockPricesObjectDatatype();
+	  
+	  
 	 
  
 	  

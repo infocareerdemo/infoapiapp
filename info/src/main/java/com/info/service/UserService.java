@@ -1,10 +1,16 @@
 package com.info.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +24,8 @@ import com.info.jwt.JwtUtil;
 import com.info.jwt.Utility;
 import com.info.repository.UserRepository;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
@@ -25,15 +33,21 @@ public class UserService {
 
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Autowired
 	HttpServletRequest request;
-	
+
 	@Autowired
 	JwtUtil jwtUtil;
-	
+
 	@Autowired
 	Utility utility;
+
+	@Autowired
+	private JavaMailSender mailSender;
+
+	@Value("${spring.mail.username}")
+	private String fromAddrs;
 
 	public List<Users> getAllUsers() {
 		List<Users> users = userRepository.findAll();
@@ -98,5 +112,59 @@ public class UserService {
 			throw new UsernameNotFoundException("Incorrect Password");
 
 		}
+	}
+
+	public void registerUser(Users user, String siteURL) throws UnsupportedEncodingException, MessagingException {
+
+		Users users = new Users();
+		BeanUtils.copyProperties(user, users);
+		String randomCode = RandomStringUtils.randomAlphanumeric(64);
+		user.setVerificationCode(randomCode);
+		user.setEnabled(0);
+		userRepository.save(user);
+		sendVerificationEmail(user, siteURL);
+	}
+
+	private void sendVerificationEmail(Users user, String siteURL)
+			throws MessagingException, UnsupportedEncodingException {
+		String toAddress = user.getEmail();
+		String fromAddress = fromAddrs;
+		String senderName = "Infocareer Team";
+		String subject = "Please verify your registration";
+		String content = "Dear [[name]],<br>" + "Please click the link below to verify your registration:<br>"
+				+ "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>" + "Thank you,<br>" + "Infocareer Team.";
+
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+
+		helper.setFrom(fromAddress, senderName);
+		helper.setTo(toAddress);
+		helper.setSubject(subject);
+
+		content = content.replace("[[name]]", user.getUsername());
+
+		String verifyURL = siteURL + "/verify?code=" + user.getVerificationCode();
+
+		content = content.replace("[[URL]]", verifyURL);
+
+		helper.setText(content, true);
+
+		mailSender.send(message);
+
+	}
+
+	public boolean verify(String verificationCode) {
+		Users user = userRepository.findByVerificationCode(verificationCode);
+
+		if (user == null && user.getEnabled() == 0) {
+			return false;
+		} else {
+			user.setVerificationCode(null);
+			user.setEnabled(1);
+			userRepository.save(user);
+
+			return true;
+		}
+
 	}
 }

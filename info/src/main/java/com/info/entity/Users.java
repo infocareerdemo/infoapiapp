@@ -1,5 +1,6 @@
 package com.info.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -15,5 +16,8 @@ public class Users {
 	private String password;
 	private String email;
 	private String role;
+	@Column(name ="verification_code")
+	private String verificationCode;
+	private int enabled;
 
 }
