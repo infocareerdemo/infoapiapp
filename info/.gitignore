@@ -14,7 +14,7 @@ target/
 .sts4-cache
 /bin/
 /target/
-.application.log
+/log/
 
 ### IntelliJ IDEA ###
 .idea
