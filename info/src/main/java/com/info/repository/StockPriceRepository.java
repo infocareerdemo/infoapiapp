@@ -24,7 +24,14 @@ public interface StockPriceRepository extends JpaRepository<StockPrice, Integer>
 	@Query(value = "SELECT * FROM stock_price", nativeQuery = true)
 	List<StockPrice> listAllStockPricesObjectDatatype();
 
-	@Query(value = "select * from stock_price sp where tdclose <= :tdclose",nativeQuery = true)
-	Slice<StockPrice> findAllByTdcloseLesserThen(@Param(value = "tdclose") int tdclose,Pageable pageable);
+	@Query(value = "select * from stock_price sp where tdclose <= :tdclose", nativeQuery = true)
+	Slice<StockPrice> findAllByTdcloseLesserThen(@Param(value = "tdclose") int tdclose, Pageable pageable);
+
+	@Query(value = "select * from stock_price sp where spsymbol =:spsymbol and spinstrument =:spinstrument", nativeQuery = true)
+	StockPrice findBySpsymbolAndSpinstrument(@Param(value = "spsymbol") String spsymbol,
+			@Param(value = "spinstrument") String spinstrument);
+	
+	@Query(value = "select * from stock_price sp where spinstrument =:spinstrument", nativeQuery = true)
+	List<StockPrice> findBySpinstrument(@Param(value = "spinstrument") String spinstrument);
 
 }

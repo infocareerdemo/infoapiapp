@@ -1,5 +1,7 @@
 package com.info.entity;
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -12,7 +14,7 @@ import lombok.Data;
 public class StockPrice {
 	
 	@Id
-	private Integer spid;
+	private int spid;
 	@Column(name="spisin")
 	private String spisin;
 	@Column(name="spinstrument")
@@ -23,13 +25,13 @@ public class StockPrice {
 	private String spexpiry_dt;
 	
 	@Column(name="tdopen")
-	private Integer tdopen;
+	private Float tdopen;
 	@Column(name="tdhigh")
-	private Integer tdhigh;
+	private Float tdhigh;
 	@Column(name="tdlow")
-	private Integer tdlow;
+	private Float tdlow;
 	@Column(name="tdclose")
-	private Integer tdclose;
+	private Float tdclose;
 	@Column(name="tdtimestamp")
 	private String tdtimestamp;
 	
@@ -113,7 +115,7 @@ public class StockPrice {
 	
 	
 	@Column(name="slastupdatedate")
-	private String slastupdatedate;
+	private Date slastupdatedate;
 	
 	
 }
