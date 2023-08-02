@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -111,4 +112,26 @@ public class UserController {
 		}
 	}
 
+	//add by anu
+	//add users
+		@PostMapping("/addUser")
+	    public Users createUser(@RequestBody Users users ) {
+	        return userService.save(users);
+	    }
+		
+		//update users
+		@PostMapping("/updateUser")
+		public ResponseEntity <Users> updateUser(@RequestParam int id,@RequestBody Users userDetails){
+			
+			return new ResponseEntity<Users>(userService.getUserDetails(id,userDetails),HttpStatus.OK);	
+		}
+		
+		//delete users
+		@DeleteMapping("/deleteUser")
+		public String deleteUser(@RequestParam int id){
+			return userService.getUserId(id); 
+			
+		}
+	
+	
 }

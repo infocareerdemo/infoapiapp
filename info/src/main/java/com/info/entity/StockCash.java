@@ -39,4 +39,5 @@ public class StockCash {
 	@Column(name ="lastupdatedate")
 	private String lastupdatedate;
 
+	
 }

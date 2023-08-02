@@ -167,4 +167,47 @@ public class UserService {
 		}
 
 	}
+	
+	
+	//add by anu
+	
+	public Users save(Users users) {
+		// TODO Auto-generated method stub
+		Users usersEntity = userRepository.save(users);
+		return usersEntity;
+	}
+
+	public Users getUserDetails(int id, Users userDetails) {
+		// TODO Auto-generated method stub
+		Optional<Users> userId = userRepository.findById(userDetails.getId());
+		Users updateUsers = new Users();
+
+		if (userId.isPresent()) {
+
+			updateUsers.setId(userDetails.getId());
+			updateUsers.setUsername(userDetails.getUsername());
+			updateUsers.setEmail(userDetails.getEmail());
+			updateUsers.setRole(userDetails.getRole());
+			updateUsers.setPassword(userDetails.getPassword());
+
+			userRepository.save(updateUsers);
+
+		} else {
+			throw new IllegalStateException("User Not Found");
+		}
+		return updateUsers;
+	}
+
+	public String getUserId(int id) {
+		// TODO Auto-generated method stub
+	  Optional<Users> users = userRepository.findById(id);
+//		Users users = userRepository.findByUserId(id);
+		//userRepository.deleteById(users.get());
+		userRepository.delete(users.get());
+		//userRepository.delete(users.get());
+		return "Deleted";
+	   
+	}
+	
+	
 }
