@@ -1,6 +1,10 @@
 package com.info.service;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +13,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +22,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.info.entity.LoginDto;
 import com.info.entity.Users;
@@ -25,6 +31,7 @@ import com.info.jwt.Utility;
 import com.info.repository.UserRepository;
 
 import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -45,6 +52,9 @@ public class UserService {
 
 	@Autowired
 	private JavaMailSender mailSender;
+	
+	@Autowired
+	Environment env;
 
 	@Value("${spring.mail.username}")
 	private String fromAddrs;
@@ -167,10 +177,25 @@ public class UserService {
 		}
 
 	}
-	
-	
-	//add by anu
-	
+
+//	public String saveImage(MultipartFile img) {
+//
+//		if (img != null && !img.equals("")) {
+//
+//			String extUrl = env.getProperty("ext.app.img.dir");
+//			String userUrl = extUrl + "/user/";
+//			File newFolder = new File(userUrl + users.getId());
+//			if (!newFolder.exists()) {
+//				newFolder.mkdirs();
+//			}
+//			byte[] bytes = img.getBytes();
+//			Path path = Paths.get(newFolder + "/" + users.getId() + ".jpg");
+//			Files.write(path, bytes);
+//		}
+//	}
+
+	// add by anu
+
 	public Users save(Users users) {
 		// TODO Auto-generated method stub
 		Users usersEntity = userRepository.save(users);
@@ -200,14 +225,13 @@ public class UserService {
 
 	public String getUserId(int id) {
 		// TODO Auto-generated method stub
-	  Optional<Users> users = userRepository.findById(id);
+		Optional<Users> users = userRepository.findById(id);
 //		Users users = userRepository.findByUserId(id);
-		//userRepository.deleteById(users.get());
+		// userRepository.deleteById(users.get());
 		userRepository.delete(users.get());
-		//userRepository.delete(users.get());
+		// userRepository.delete(users.get());
 		return "Deleted";
-	   
+
 	}
-	
-	
+
 }

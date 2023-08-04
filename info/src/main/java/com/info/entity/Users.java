@@ -19,5 +19,6 @@ public class Users {
 	@Column(name ="verification_code")
 	private String verificationCode;
 	private int enabled;
+	
 
 }

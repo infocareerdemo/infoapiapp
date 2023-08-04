@@ -83,7 +83,7 @@ public class StockPriceService {
 //		return stockPrice;
 //	}
 
-	public List<StockPrice> updateStock(String series, String timestamp) {
+	public String updateStock(String series, String timestamp) {
 		List<StockPrice> stockPrices = new ArrayList<>();
 
 		List<StockCash> stockCashs = stockCashRepository.findBySeriesAndTimestamp(series, timestamp);
@@ -97,23 +97,26 @@ public class StockPriceService {
 		if (!stockCashs.isEmpty()) {
 
 			for (StockCash stc : stockCashs) {
-				Optional<StockPrice> stList = stPrices.stream().filter(sp -> sp.getSpid() == stc.getId()).findFirst();
+				Optional<StockPrice> stList = stPrices.stream().filter(sp -> sp.getSpsymbol().equalsIgnoreCase(stc.getSymbol())).findFirst();
 				if (stList.isPresent()) {
 
 					stList.get().setTdopen(stc.getOpen());
 					stList.get().setTdclose(stc.getClose());
 					stList.get().setTdlow(stc.getLow());
 					stList.get().setTdhigh(stc.getHigh());
-					stList.get().setTdtimestamp(date1);
+					stList.get().setTdtimestamp(stc.getTimestamp());
 					stList.get().setSlastupdatedate(new Date());
-					stockPriceRepository.save(stList.get());
-
+					System.out.println("sp added");
 					stockPrices.add(stList.get());
+					
 				}
 			}
+			stockPriceRepository.saveAll(stockPrices);
+			System.out.println("sp saved");
+			
 		}
 
-		return stockPrices;
+		return "Updated";
 	}
 
 }

@@ -58,6 +58,13 @@ public class StockPriceRestController {
 
 	}
 	
+	@Scheduled(cron = "0 */5 * * * *")
+	public ResponseEntity<Object> updateStockSch() {
+		System.out.println("scheduled");
+		return new ResponseEntity<Object>(service.updateStock(null, null), HttpStatus.OK);
+
+	}
+	
 	
 
 }

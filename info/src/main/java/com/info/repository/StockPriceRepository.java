@@ -31,7 +31,6 @@ public interface StockPriceRepository extends JpaRepository<StockPrice, Integer>
 	StockPrice findBySpsymbolAndSpinstrument(@Param(value = "spsymbol") String spsymbol,
 			@Param(value = "spinstrument") String spinstrument);
 	
-	@Query(value = "select * from stock_price sp where spinstrument =:spinstrument", nativeQuery = true)
-	List<StockPrice> findBySpinstrument(@Param(value = "spinstrument") String spinstrument);
+	List<StockPrice> findBySpinstrument(String spinstrument);
 
 }
