@@ -40,7 +40,7 @@ public class UserKYC {
 	@NotNull(message = "Country Required")
 	private String country;
 	private String image;
-//	private String video;
+	private String video;
 	
 	
 

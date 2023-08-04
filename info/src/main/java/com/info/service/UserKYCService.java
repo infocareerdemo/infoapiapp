@@ -39,7 +39,7 @@ public class UserKYCService {
 	@Autowired
 	RefVideoRepository refVideoRepository;
 
-	public UserKYC registerUser(UserKYC userKYC, MultipartFile img, MultipartFile vdo) throws IOException {
+	public Map<String, Object> registerUser(UserKYC userKYC, MultipartFile img, MultipartFile vdo) throws IOException {
 
 		Map<String, Object> map = new HashMap<>();
 
@@ -92,18 +92,19 @@ public class UserKYCService {
 
 					String filePath = newFolder + "/" + vdo.getOriginalFilename();
 
-//					vdo.transferTo(new File(filePath));
-
 					RefVideo refVideo = new RefVideo();
 					refVideo.setPath(filePath);
 					refVideo.setUserId(usr);
 					refVideo.setVdoname(vdo.getOriginalFilename());
 
 					RefVideo video = refVideoRepository.save(refVideo);
+					usr.setVideo(video.getVdoname());
 
 				}
 
 				userKYCRepository.save(usr);
+				map.put("Message", "User Saved..!!");
+
 			} else {
 				map.put("Error", "Email Already Exist");
 			}
@@ -112,38 +113,10 @@ public class UserKYCService {
 			map.put("Error", "Email Already Exist");
 		}
 
-		return user;
+		return map;
 
 	}
 
-//    public ResponseEntity<String> handleFileUpload(int id, MultipartFile file, String field) {
-//        try {
-//        	String extUrl = env.getProperty("ext.app.dir");
-//        	String userUrl = extUrl + "/infoImages/user/";
-//			File newFolder = new File(userUrl);
-//			String filePath = newFolder + "/" + file.getOriginalFilename();
-//
-//            // Save the file to the server
-//            file.transferTo(new File(filePath));
-//
-//            // Find the user by ID and update the image or video field
-//            Optional<UserKYC> optionalUser = userKYCRepository.findById(id);
-//            if (optionalUser.isPresent()) {
-//            	UserKYC user = optionalUser.get();
-//                if ("profileImage".equals(field)) {
-//                    user.setProfileImage(filePath);
-//                } else if ("profileVideo".equals(field)) {
-//                    user.setProfileVideo(filePath);
-//                }
-//                userRepository.save(user);
-//            }
-//
-//            return ResponseEntity.ok("File uploaded successfully: " + filename);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload the file.");
-//        }
-//    }
 
 	public Optional<UserKYC> getUserById(int id) {
 		Optional<UserKYC> user = userKYCRepository.findById(id);
