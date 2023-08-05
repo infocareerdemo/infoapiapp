@@ -102,7 +102,8 @@ public class UserKYCService {
 
 				}
 
-				userKYCRepository.save(usr);
+//				UserKYC u = userKYCRepository.save(usr);
+				
 				map.put("Message", "User Saved..!!");
 
 			} else {
@@ -117,9 +118,19 @@ public class UserKYCService {
 
 	}
 
-
 	public Optional<UserKYC> getUserById(int id) {
 		Optional<UserKYC> user = userKYCRepository.findById(id);
+		if (user.isPresent()) {
+			RefImage img = refImageRepository.findByUserId(user.get());
+			if (img != null) {
+				user.get().setImage(img.getPath().replace("\\", "/"));
+			}
+			RefVideo vdo = refVideoRepository.findByUserId(user.get());
+			if (vdo != null) {
+				user.get().setVideo(vdo.getPath().replace("\\", "/"));
+			}
+		}
+
 		return user;
 	}
 

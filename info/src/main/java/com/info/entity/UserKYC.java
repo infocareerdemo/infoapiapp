@@ -41,6 +41,7 @@ public class UserKYC {
 	private String country;
 	private String image;
 	private String video;
+	private String audio;
 	
 	
 
