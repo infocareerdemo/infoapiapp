@@ -19,6 +19,8 @@ import com.info.entity.UserKYC;
 
 import com.info.service.UserKYCService;
 
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -29,29 +31,21 @@ public class UserKYCController {
 	UserKYCService userKYCService;
 
 	@PostMapping("/regUser")
-	public ResponseEntity<Object> registerUser(@ModelAttribute @Valid UserKYC userKYC,@RequestPart MultipartFile img,@RequestPart MultipartFile vdo) throws IOException {
-		return new ResponseEntity<Object>(userKYCService.registerUser(userKYC, img,vdo), HttpStatus.OK);
+	public ResponseEntity<Object> registerUser(@ModelAttribute @Valid UserKYC userKYC, @RequestPart MultipartFile img,
+			@RequestPart MultipartFile vdo, HttpServletRequest request) throws IOException, MessagingException {
+		return new ResponseEntity<Object>(userKYCService.registerUser(userKYC, img, vdo, getSiteURL(request)),
+				HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/kycId")
-	public ResponseEntity<Object> getUserById(@RequestParam int id){
+	public ResponseEntity<Object> getUserById(@RequestParam int id) {
 		return new ResponseEntity<Object>(userKYCService.getUserById(id), HttpStatus.OK);
 	}
 
-//	@PostMapping("/users/{id}/profile-image")
-//    public ResponseEntity<String> uploadProfileImage(
-//            @PathVariable Long id,
-//            @RequestParam("file") MultipartFile file
-//    ) {
-//        return handleFileUpload(id, file, "profileImage");
-//    }
-//
-//    @PostMapping("/users/{id}/profile-video")
-//    public ResponseEntity<String> uploadProfileVideo(
-//            @PathVariable Long id,
-//            @RequestParam("file") MultipartFile file
-//    ) {
-//        return handleFileUpload(id, file, "profileVideo");
-//    }
+	private String getSiteURL(HttpServletRequest request) {
+		String siteURL = request.getRequestURL().toString();
+		return siteURL.replace(request.getServletPath(), "");
+	}
+
 
 }

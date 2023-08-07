@@ -5,8 +5,11 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -24,10 +27,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.info.entity.ChangePassword;
 import com.info.entity.LoginDto;
+import com.info.entity.RefImage;
+import com.info.entity.RefVideo;
+import com.info.entity.UserKYC;
 import com.info.entity.Users;
 import com.info.jwt.JwtUtil;
 import com.info.jwt.Utility;
+import com.info.repository.RefImageRepository;
+import com.info.repository.RefVideoRepository;
+import com.info.repository.UserKYCRepository;
 import com.info.repository.UserRepository;
 
 import jakarta.mail.MessagingException;
@@ -52,9 +62,18 @@ public class UserService {
 
 	@Autowired
 	private JavaMailSender mailSender;
-	
+
 	@Autowired
 	Environment env;
+	
+	@Autowired
+	UserKYCRepository userKYCRepository;
+	
+	@Autowired
+	RefImageRepository refImageRepository;
+
+	@Autowired
+	RefVideoRepository refVideoRepository;
 
 	@Value("${spring.mail.username}")
 	private String fromAddrs;
@@ -76,10 +95,32 @@ public class UserService {
 	public Optional<Users> getMyAccount() {
 		if (utility.getUserId() != 0) {
 			Optional<Users> opUser = getUserById(utility.getUserId());
+			if(opUser.isPresent()) {
+				Optional<UserKYC> usrKyc = getUserKycById(opUser.get().getUserId().getId());
+				if(usrKyc.isPresent()) {
+					opUser.get().setUserId(usrKyc.get());
+				}
+			}
 			return opUser;
 		} else {
 			throw new IllegalStateException("UnAuthorized");
 		}
+	}
+	
+	public Optional<UserKYC> getUserKycById(int id) {
+		Optional<UserKYC> user = userKYCRepository.findById(id);
+		if (user.isPresent()) {
+			RefImage img = refImageRepository.findByUserId(user.get());
+			if (img != null) {
+				user.get().setImage(img.getPath().replace("\\", "/"));
+			}
+			RefVideo vdo = refVideoRepository.findByUserId(user.get());
+			if (vdo != null) {
+				user.get().setVideo(vdo.getPath().replace("\\", "/"));
+			}
+		}
+
+		return user;
 	}
 
 	public UsernamePasswordAuthenticationToken validateLogin(LoginDto loginDto) {
@@ -87,10 +128,10 @@ public class UserService {
 		String user = null;
 		Users details = null;
 		boolean emailAuthFlag = false;
+		boolean lastLoginFlag = false;
 
 		if (loginDto.getEmail() != null && !loginDto.getEmail().isEmpty() && loginDto.getPassword() != null
 				&& !loginDto.getPassword().isEmpty()) {
-
 			emailAuthFlag = true;
 			details = userRepository.findByEmail(loginDto.getEmail());
 			if (details == null) {
@@ -101,13 +142,18 @@ public class UserService {
 		String role = details.getRole();
 
 		if (loginDto.getPassword().equals(details.getPassword())) {
-
-			user = jwtUtil.doGenerateToken(details);
+			lastLoginFlag = true;
+			if (lastLoginFlag == true) {
+				user = jwtUtil.doGenerateToken(details);
+				details.setLastLogin(LocalDateTime.now());
+			}
 
 			request.getSession().setAttribute("LoggedIn", "TRUE");
 			request.getSession().setAttribute("userName", details.getUsername());
 			request.getSession().setAttribute("Role", details.getRole());
 			request.getSession().setAttribute("Id", details.getId());
+
+			userRepository.save(details);
 
 			List<GrantedAuthority> authorities = new ArrayList<>();
 			authorities.add(new SimpleGrantedAuthority(role));
@@ -124,15 +170,20 @@ public class UserService {
 		}
 	}
 
-	public void registerUser(Users user, String siteURL) throws UnsupportedEncodingException, MessagingException {
+	public void registerUser(UserKYC userKYC, String siteURL) throws UnsupportedEncodingException, MessagingException {
 
-		Users users = new Users();
-		BeanUtils.copyProperties(user, users);
-		String randomCode = RandomStringUtils.randomAlphanumeric(64);
-		user.setVerificationCode(randomCode);
-		user.setEnabled(0);
-		userRepository.save(user);
-		sendVerificationEmail(user, siteURL);
+		if (userKYC != null) {
+			Users users = new Users();
+			users.setEmail(userKYC.getEmail());
+			users.setUsername(userKYC.getFirstname());
+			users.setRole("User");
+			users.setUserId(userKYC);
+			String randomCode = RandomStringUtils.randomAlphanumeric(64);
+			users.setVerificationCode(randomCode);
+			users.setEnabled(0);
+			userRepository.save(users);
+			sendVerificationEmail(users, siteURL);
+		}
 	}
 
 	private void sendVerificationEmail(Users user, String siteURL)
@@ -163,7 +214,7 @@ public class UserService {
 
 	}
 
-	public boolean verify(String verificationCode) {
+	public boolean verify(String verificationCode) throws UnsupportedEncodingException, MessagingException {
 		Users user = userRepository.findByVerificationCode(verificationCode);
 
 		if (user == null && user.getEnabled() == 0) {
@@ -171,28 +222,73 @@ public class UserService {
 		} else {
 			user.setVerificationCode(null);
 			user.setEnabled(1);
+			String password = RandomStringUtils.randomAlphanumeric(8);
+			user.setPassword(password);
 			userRepository.save(user);
+			sendPasswordEmail(user);
 
 			return true;
 		}
 
 	}
 
-//	public String saveImage(MultipartFile img) {
-//
-//		if (img != null && !img.equals("")) {
-//
-//			String extUrl = env.getProperty("ext.app.img.dir");
-//			String userUrl = extUrl + "/user/";
-//			File newFolder = new File(userUrl + users.getId());
-//			if (!newFolder.exists()) {
-//				newFolder.mkdirs();
-//			}
-//			byte[] bytes = img.getBytes();
-//			Path path = Paths.get(newFolder + "/" + users.getId() + ".jpg");
-//			Files.write(path, bytes);
-//		}
-//	}
+	private void sendPasswordEmail(Users user) throws UnsupportedEncodingException, MessagingException {
+
+		String toAddress = user.getEmail();
+		String fromAddress = fromAddrs;
+		String senderName = "Infocareer Team";
+		String subject = "Your Login Details";
+		String content = "Dear [[name]],<br>" + "Please Login using this Details:<br>" + "Email:[[email]]<br>"
+				+ "Password:[[password]]<br>" + "Kindly change your password at first login.<br>" + "Thank you,<br>"
+				+ "Infocareer Team.";
+
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+
+		helper.setFrom(fromAddress, senderName);
+		helper.setTo(toAddress);
+		helper.setSubject(subject);
+
+		content = content.replace("[[name]]", user.getUsername());
+		content = content.replace("[[email]]", user.getEmail());
+		content = content.replace("[[password]]", user.getPassword());
+
+		helper.setText(content, true);
+
+		mailSender.send(message);
+	}
+
+	public Map<String, Object> changePassword(ChangePassword changePassword) {
+
+		Map<String, Object> entity = new LinkedHashMap<String, Object>();
+
+		if (utility.getUserId() != 0) {
+
+			Optional<Users> user = userRepository.findById(utility.getUserId());
+
+			if (user.isPresent()) {
+
+				if (changePassword.getOldPassword().equals(user.get().getPassword())) {
+					if (changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
+						user.get().setPassword(changePassword.getConfirmPassword());
+
+						userRepository.save(user.get());
+
+						entity.put("Message", "Password Changed Successfully");
+					} else {
+						entity.put("Error", "Password Mis-Matched");
+					}
+				} else {
+					entity.put("Error", "Old password Mis-Matched");
+				}
+
+			} else {
+				entity.put("Error", "User Not Found");
+			}
+
+		}
+		return entity;
+	}
 
 	// add by anu
 

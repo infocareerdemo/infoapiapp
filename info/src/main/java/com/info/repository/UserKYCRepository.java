@@ -8,8 +8,8 @@ import lombok.NonNull;
 
 public interface UserKYCRepository extends JpaRepository<UserKYC, Integer> {
 
-	UserKYC findByEmail(@NonNull String email);
+	UserKYC findByEmail(String email);
 
-	UserKYC findByPhone(@NonNull String phone);
+	UserKYC findByPhone(String phone);
 
 }

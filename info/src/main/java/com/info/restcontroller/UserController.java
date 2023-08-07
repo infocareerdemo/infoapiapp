@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.info.entity.ChangePassword;
 import com.info.entity.LoginDto;
 import com.info.entity.LoginResponse;
 import com.info.entity.Users;
@@ -91,25 +93,26 @@ public class UserController {
 		return ResponseEntity.ok(responseMsg);
 	}
 
-	@PostMapping("/register")
-	public String processRegister(@RequestBody Users user, HttpServletRequest request)
-			throws UnsupportedEncodingException, MessagingException {
-		userService.registerUser(user, getSiteURL(request));
-		return "Successfully Registered";
-	}
+//	@PostMapping("/register")
+//	public String processRegister(@RequestBody Users user, HttpServletRequest request)
+//			throws UnsupportedEncodingException, MessagingException {
+//		userService.registerUser(user, getSiteURL(request));
+//		return "Successfully Registered";
+//	}
 
-	private String getSiteURL(HttpServletRequest request) {
-		String siteURL = request.getRequestURL().toString();
-		return siteURL.replace(request.getServletPath(), "");
-	}
-
+	
 	@PostMapping("/verify")
-	public String verifyUser(@RequestParam String code) {
+	public String verifyUser(@RequestParam String code) throws UnsupportedEncodingException, MessagingException {
 		if (userService.verify(code)) {
-			return "Successfully verified";
+			return "Successfully verified..!!.Details send to your Email";
 		} else {
-			return "Verification failed";
+			return "Verification failed..!!";
 		}
+	}
+	
+	@PostMapping("/chngPswd")
+	public ResponseEntity<Object> changePassword(@RequestBody ChangePassword changePassword){
+		return new ResponseEntity<Object>(userService.changePassword(changePassword), HttpStatus.OK);
 	}
 	
 	

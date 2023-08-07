@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.catalina.User;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -20,9 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.info.entity.RefImage;
 import com.info.entity.RefVideo;
 import com.info.entity.UserKYC;
+import com.info.entity.Users;
 import com.info.repository.RefImageRepository;
 import com.info.repository.RefVideoRepository;
 import com.info.repository.UserKYCRepository;
+
+import jakarta.mail.MessagingException;
 
 @Service
 public class UserKYCService {
@@ -32,6 +37,9 @@ public class UserKYCService {
 
 	@Autowired
 	Environment env;
+	
+	@Autowired
+	UserService userService;
 
 	@Autowired
 	RefImageRepository refImageRepository;
@@ -39,7 +47,8 @@ public class UserKYCService {
 	@Autowired
 	RefVideoRepository refVideoRepository;
 
-	public Map<String, Object> registerUser(UserKYC userKYC, MultipartFile img, MultipartFile vdo) throws IOException {
+	public Map<String, Object> registerUser(UserKYC userKYC, MultipartFile img, MultipartFile vdo, String siteURL)
+			throws IOException, MessagingException {
 
 		Map<String, Object> map = new HashMap<>();
 
@@ -102,12 +111,14 @@ public class UserKYCService {
 
 				}
 
-//				UserKYC u = userKYCRepository.save(usr);
+				UserKYC u = userKYCRepository.save(usr);
+				
+				userService.registerUser(u, siteURL);
 				
 				map.put("Message", "User Saved..!!");
 
 			} else {
-				map.put("Error", "Email Already Exist");
+				map.put("Error", "Phone Already Exist");
 			}
 
 		} else {
