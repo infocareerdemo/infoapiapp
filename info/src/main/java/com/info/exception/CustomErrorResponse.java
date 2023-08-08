@@ -1,4 +1,4 @@
-package com.info.entity;
+package com.info.exception;
 
 import java.util.Map;
 

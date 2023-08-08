@@ -27,19 +27,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.info.entity.ChangePassword;
-import com.info.entity.LoginDto;
-import com.info.entity.RefImage;
-import com.info.entity.RefVideo;
 import com.info.entity.UserKYC;
 import com.info.entity.Users;
 import com.info.jwt.JwtUtil;
 import com.info.jwt.Utility;
-import com.info.repository.RefImageRepository;
-import com.info.repository.RefVideoRepository;
 import com.info.repository.UserKYCRepository;
 import com.info.repository.UserRepository;
-
 import jakarta.mail.MessagingException;
 import jakarta.mail.Multipart;
 import jakarta.mail.internet.MimeMessage;
@@ -65,15 +58,9 @@ public class UserService {
 
 	@Autowired
 	Environment env;
-	
-	@Autowired
-	UserKYCRepository userKYCRepository;
-	
-	@Autowired
-	RefImageRepository refImageRepository;
 
 	@Autowired
-	RefVideoRepository refVideoRepository;
+	UserKYCRepository userKYCRepository;
 
 	@Value("${spring.mail.username}")
 	private String fromAddrs;
@@ -95,9 +82,9 @@ public class UserService {
 	public Optional<Users> getMyAccount() {
 		if (utility.getUserId() != 0) {
 			Optional<Users> opUser = getUserById(utility.getUserId());
-			if(opUser.isPresent()) {
+			if (opUser.isPresent()) {
 				Optional<UserKYC> usrKyc = getUserKycById(opUser.get().getUserId().getId());
-				if(usrKyc.isPresent()) {
+				if (usrKyc.isPresent()) {
 					opUser.get().setUserId(usrKyc.get());
 				}
 			}
@@ -106,42 +93,39 @@ public class UserService {
 			throw new IllegalStateException("UnAuthorized");
 		}
 	}
-	
+
 	public Optional<UserKYC> getUserKycById(int id) {
 		Optional<UserKYC> user = userKYCRepository.findById(id);
 		if (user.isPresent()) {
-			RefImage img = refImageRepository.findByUserId(user.get());
-			if (img != null) {
-				user.get().setImage(img.getPath().replace("\\", "/"));
-			}
-			RefVideo vdo = refVideoRepository.findByUserId(user.get());
-			if (vdo != null) {
-				user.get().setVideo(vdo.getPath().replace("\\", "/"));
-			}
+			String url = env.getProperty("file.url");
+			user.get().setImage(url + "/infoImages/" + user.get().getImage());
+			user.get().setVideo(url + "/infoVideo/" + user.get().getVideo());
 		}
 
 		return user;
 	}
 
-	public UsernamePasswordAuthenticationToken validateLogin(LoginDto loginDto) {
+	public UsernamePasswordAuthenticationToken validateLogin(Map<String, String> credentials) {
+
+		String email = credentials.get("email");
+		String password = credentials.get("password");
 
 		String user = null;
 		Users details = null;
 		boolean emailAuthFlag = false;
 		boolean lastLoginFlag = false;
 
-		if (loginDto.getEmail() != null && !loginDto.getEmail().isEmpty() && loginDto.getPassword() != null
-				&& !loginDto.getPassword().isEmpty()) {
+		if (email != null && !email.isEmpty() && password != null && !password.isEmpty()) {
 			emailAuthFlag = true;
-			details = userRepository.findByEmail(loginDto.getEmail());
+			details = userRepository.findByEmail(email);
 			if (details == null) {
-				throw new UsernameNotFoundException(loginDto.getEmail() + "Not found");
+				throw new UsernameNotFoundException(email + "Not found");
 			}
 		}
 
 		String role = details.getRole();
 
-		if (loginDto.getPassword().equals(details.getPassword())) {
+		if (password.equals(details.getPassword())) {
 			lastLoginFlag = true;
 			if (lastLoginFlag == true) {
 				user = jwtUtil.doGenerateToken(details);
@@ -258,9 +242,12 @@ public class UserService {
 		mailSender.send(message);
 	}
 
-	public Map<String, Object> changePassword(ChangePassword changePassword) {
+	public Map<String, Object> changePassword(Map<String, String> changePassword) {
 
 		Map<String, Object> entity = new LinkedHashMap<String, Object>();
+
+		String oldPassword = changePassword.get("oldPassword");
+		String newPassword = changePassword.get("newPassword");
 
 		if (utility.getUserId() != 0) {
 
@@ -268,16 +255,10 @@ public class UserService {
 
 			if (user.isPresent()) {
 
-				if (changePassword.getOldPassword().equals(user.get().getPassword())) {
-					if (changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
-						user.get().setPassword(changePassword.getConfirmPassword());
-
-						userRepository.save(user.get());
-
-						entity.put("Message", "Password Changed Successfully");
-					} else {
-						entity.put("Error", "Password Mis-Matched");
-					}
+				if (oldPassword.equals(user.get().getPassword())) {
+					user.get().setPassword(newPassword);
+					userRepository.save(user.get());
+					entity.put("Message", "Password Changed Successfully");
 				} else {
 					entity.put("Error", "Old password Mis-Matched");
 				}
@@ -330,7 +311,5 @@ public class UserService {
 		return "Deleted";
 
 	}
-	
-	
 
 }

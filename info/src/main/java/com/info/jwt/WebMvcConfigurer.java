@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 @Configuration
-public class WebMvcConfigurer implements org.springframework.web.servlet.config.annotation.WebMvcConfigurer{
+public class WebMvcConfigurer implements org.springframework.web.servlet.config.annotation.WebMvcConfigurer {
 
 	@Autowired
 	CustomHttpRequestInterceptor customHttpRequestInterceptor;
@@ -15,6 +15,8 @@ public class WebMvcConfigurer implements org.springframework.web.servlet.config.
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+		registry.addResourceHandler("/infoImages/**").addResourceLocations("classpath:/webapp/infoImages/");
+		registry.addResourceHandler("/infoVideo/**").addResourceLocations("classpath:/webapp/infoVideo/");
 	}
 
 	@Override
