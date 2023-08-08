@@ -40,16 +40,24 @@ public class UserKYCController {
 			@Valid @RequestPart MultipartFile img, @Valid @RequestPart MultipartFile vdo, HttpServletRequest request)
 			throws IOException, MessagingException {
 
+		Map<String, String> errors = new HashMap<>();
 		if (result.hasErrors()) {
-			// Handle validation errors here
-			Map<String, String> errors = new HashMap<>();
 			for (FieldError error : result.getFieldErrors()) {
 				System.out.println(error.getDefaultMessage());
 				errors.put(error.getField(), error.getDefaultMessage());
-				
 			}
+
+			if (img.getOriginalFilename().equals("") || img == null) {
+				errors.put("Image", "Image file Required");
+			}
+
+			if (vdo.getOriginalFilename().equals("") || vdo == null) {
+				errors.put("Video", "Video file Required");
+			}
+
 			return ResponseEntity.badRequest().body(new CustomErrorResponse("Validation errors", errors));
 		}
+
 		return new ResponseEntity<>(userKYCService.registerUser(userKYC, img, vdo, getSiteURL(request)), HttpStatus.OK);
 	}
 

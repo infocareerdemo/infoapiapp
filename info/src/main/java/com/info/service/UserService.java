@@ -309,7 +309,8 @@ public class UserService {
 			updateUsers.setUsername(userDetails.getUsername());
 			updateUsers.setEmail(userDetails.getEmail());
 			updateUsers.setRole(userDetails.getRole());
-			updateUsers.setPassword(userDetails.getPassword());
+			updateUsers.setPassword(userId.get().getPassword());
+//			updateUsers.set
 
 			userRepository.save(updateUsers);
 
@@ -329,5 +330,7 @@ public class UserService {
 		return "Deleted";
 
 	}
+	
+	
 
 }

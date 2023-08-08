@@ -34,7 +34,7 @@ public class Users {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private UserKYC userId;
-	@CreationTimestamp
+//	@CreationTimestamp
 	@Column(name = "last_login")
 	private LocalDateTime lastLogin;
 }

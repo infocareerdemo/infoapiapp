@@ -9,6 +9,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -29,28 +31,22 @@ public class UserKYC {
 	@NotEmpty(message = "Firstname is Required")
 	private String firstname;
 	private String lastname;
-	@NotNull(message = "Email is Required")
 	@NotEmpty(message = "Email is Required")
+	@Email(message = "Invalid Email Address")
 	private String email;
 	@NotNull(message = "Phone number is Required")
 	@NotEmpty(message = "Phone number is Required")
 	@Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
 	private String phone;
 	@NotNull(message = "Dob is Required")
-//	@NotEmpty(message = "Dob is  Required")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dob;
 	@NotNull(message = "Gender is Required")
 	@NotEmpty(message = "Gender is Required")
 	private String gender;
-	@NotNull(message = "Country is Required")
-	@NotEmpty(message = "Country is Required")
+	@NotBlank(message = "Country is Required")
 	private String country;
-	@NotNull(message = "Image is Required")
-	@NotEmpty(message = "Image is Required")
 	private String image;
-	@NotNull(message = "Video is Required")
-	@NotEmpty(message = "Video is Required")
 	private String video;
 
 }
