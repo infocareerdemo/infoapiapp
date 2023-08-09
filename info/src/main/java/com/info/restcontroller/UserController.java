@@ -86,7 +86,7 @@ public class UserController {
 			}
 		} catch (UsernameNotFoundException e) {
 			responseMsg = "Error:" + e.getMessage();
-			loginResponse.put("ResponseText", "Success");
+			loginResponse.put("ResponseText", responseMsg);
 			return ResponseEntity.ok(loginResponse);
 		}
 

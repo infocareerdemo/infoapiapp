@@ -119,7 +119,7 @@ public class UserService {
 			emailAuthFlag = true;
 			details = userRepository.findByEmail(email);
 			if (details == null) {
-				throw new UsernameNotFoundException(email + "Not found");
+				throw new UsernameNotFoundException(email + " Not found");
 			}
 		}
 
