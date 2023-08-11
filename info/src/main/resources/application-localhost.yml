@@ -1,0 +1,8 @@
+# Actuator Exposing All Endpoints except /shutdown by modifying our application.properties file
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - "*"
+        
