@@ -266,7 +266,6 @@ public class UserService {
 			} else {
 				entity.put("Error", "User Not Found");
 			}
-
 		}
 		return entity;
 	}

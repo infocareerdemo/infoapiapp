@@ -2,6 +2,7 @@ package com.info.restcontroller;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +28,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+@CrossOrigin(origins = {"http://localhost:3000/"})
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -111,6 +114,12 @@ public class UserController {
 
 	@PostMapping("/chngPswd")
 	public ResponseEntity<Object> changePassword(@RequestBody Map<String, String> changePassword) {
+		Map<String, Object> entity = new LinkedHashMap<String, Object>();
+
+		String oldPassword = changePassword.get("oldPassword");
+		String newPassword = changePassword.get("newPassword");
+		System.out.println(oldPassword);
+		System.out.println(newPassword);
 		return new ResponseEntity<Object>(userService.changePassword(changePassword), HttpStatus.OK);
 	}
 
