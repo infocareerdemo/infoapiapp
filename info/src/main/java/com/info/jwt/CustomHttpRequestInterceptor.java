@@ -18,14 +18,13 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class CustomHttpRequestInterceptor implements HandlerInterceptor {
 
-	private final String secret = "secret";   
+	private final String secret = "secret";
 
 	@Autowired
 	JwtUtil jwtUtil;
 
 	@Autowired
 	Utility utility;
-
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -39,6 +38,21 @@ public class CustomHttpRequestInterceptor implements HandlerInterceptor {
 				String errorMessage = "Token has expired";
 				response.getWriter().write(errorMessage);
 				return false;
+			}else {
+				String authorizationHeader = request.getHeader("Authorization");
+				String tokenPrefix = "Bearer ";
+				if (authorizationHeader != null) {
+					Jws<Claims> jws = Jwts.parser().setSigningKey(secret)
+							.parseClaimsJws(authorizationHeader.replace(tokenPrefix, ""));
+					int id = jws.getBody().get("id") == null ? 0 : (int) jws.getBody().get("id");
+					Users userDetails = utility.getUserById(id);
+					String regenToken = jwtUtil.doGenerateRefreshToken(userDetails);
+					if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+						authorizationHeader = "";
+						authorizationHeader = "Bearer " + regenToken;
+						response.addHeader("Authorization", authorizationHeader);
+					}
+				}
 			}
 		return true;
 	}
@@ -58,23 +72,4 @@ public class CustomHttpRequestInterceptor implements HandlerInterceptor {
 		return null;
 	}
 
-	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object object, Exception ex)
-			throws Exception {
-		String authorizationHeader = request.getHeader("Authorization");
-		String tokenPrefix = "Bearer ";
-		if (authorizationHeader != null) {
-			Jws<Claims> jws = Jwts.parser().setSigningKey(secret)
-					.parseClaimsJws(authorizationHeader.replace(tokenPrefix, ""));
-			int id = jws.getBody().get("id") == null ? 0 : (int) jws.getBody().get("id");
-			Users userDetails = utility.getUserById(id);
-			String regenToken = jwtUtil.doGenerateRefreshToken(userDetails);
-			if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-				authorizationHeader = "";
-				authorizationHeader = "Bearer " + regenToken;
-				System.out.println(authorizationHeader);
-			}
-		}
 	}
-
-}
