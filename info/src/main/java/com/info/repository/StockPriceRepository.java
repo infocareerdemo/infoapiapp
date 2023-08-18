@@ -30,7 +30,15 @@ public interface StockPriceRepository extends JpaRepository<StockPrice, Integer>
 	@Query(value = "select * from stock_price sp where spsymbol =:spsymbol and spinstrument =:spinstrument", nativeQuery = true)
 	StockPrice findBySpsymbolAndSpinstrument(@Param(value = "spsymbol") String spsymbol,
 			@Param(value = "spinstrument") String spinstrument);
-	
+
 	List<StockPrice> findBySpinstrument(String spinstrument);
 
+	@Query("SELECT sp FROM StockPrice sp WHERE CONCAT(sp.spid,' ', sp.spisin,' ', sp.spinstrument,' ', sp.spsymbol,' ') ILIKE %?1%")
+    public List<StockPrice> searchList(String keyword);
+
+//	@Query(value = "SELECT sp FROM StockPrice sp WHERE CONCAT(sp.spid, ' ', sp.spisin, ' ', sp.spinstrument, ' ', sp.spsymbol, ' ')ILIKE '%' || ?1 ||'%'", nativeQuery = true)
+//	public List<StockPrice> searchList(String keyword);
+	
+	@Query("SELECT sp FROM StockPrice sp WHERE CONCAT(sp.spsymbol,' ') ILIKE %?1%")
+    public List<StockPrice> searchSymbol(String symbol);
 }

@@ -18,6 +18,12 @@ public class StockCashRestController {
 	private StockCashService service;
 	
 	
+	@GetMapping("/executeCustomQuery")
+    public List<Object[]> executeCustomQuery(@RequestParam("sqlQuery") String sqlQuery) {
+        return service.executeCustomQuery(sqlQuery);
+
+    }
+	
 	  @GetMapping("/reliancedata") 
 	  public List<StockCash> getreliancedata(@RequestParam String symbolname) {
 		  return service.getreliancedata(symbolname); 
