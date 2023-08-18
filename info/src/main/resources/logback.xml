@@ -17,7 +17,9 @@
 			<charset>UTF-8</charset>
 		</layout>
 	</appender>
-	
+	 <appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- Appender configuration goes here -->
+    </appender>
 	<appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
 		<file>log/application.log</file>
 		<append>true</append>
@@ -26,10 +28,9 @@
 		</encoder>
 	</appender>
 
-	<!-- Define the custom converter to format exceptions -->
+<!-- Define the custom converter to format exceptions -->
 	<conversionRule conversionWord="ex"
-		converterClass="com.training.controller.EmailController" ></conversionRule>
-
+		converterClass="com.info.restcontroller.EmailController" ></conversionRule>
 	<root level="INFO">
 		<appender-ref ref="emailAppender" />
 		<appender-ref ref="fileAppender" />

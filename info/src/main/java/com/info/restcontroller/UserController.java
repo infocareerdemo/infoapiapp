@@ -3,6 +3,7 @@ package com.info.restcontroller;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.info.dto.UsersDto;
 import com.info.entity.Users;
 import com.info.exception.ApplicationErrorCodes;
 import com.info.exception.ApplicationException;
@@ -49,8 +52,6 @@ public class UserController {
 	@Autowired
 	JwtUtil jwtUtil;
 
-//	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-	
 	Logger log = LoggerFactory.getLogger(UserController.class);
 
 	@GetMapping("/list")
@@ -63,12 +64,12 @@ public class UserController {
 	public ResponseEntity<Object> getUserById(@RequestParam int id) {
 
 		Optional<Users> usr = userService.getUserById(id);
-		log.info("id:"+String.valueOf(id));
+		log.info("id:" + String.valueOf(id));
 		if (usr.isPresent()) {
-			
+
 			return new ResponseEntity<Object>(usr, HttpStatus.OK);
 		} else {
-//			log.error("id : ", id);
+			log.error("id:" + String.valueOf(id));
 			throw new ApplicationRunTimeException(HttpStatus.PRECONDITION_FAILED, ApplicationErrorCodes.DB_UNAUTHORIZED,
 					new Date(), ApplicationErrorCodes.DB_UNAUTHORIZED_MSG);
 		}
@@ -143,6 +144,17 @@ public class UserController {
 	@PostMapping("/chngPswd")
 	public ResponseEntity<Object> changePassword(@RequestBody Map<String, String> changePassword) {
 		return new ResponseEntity<Object>(userService.changePassword(changePassword), HttpStatus.OK);
+	}
+
+	@GetMapping("/usersList")
+	public ResponseEntity<Object> getAllUsersList() {
+		List<UsersDto> users = userService.getAllUsersList();
+		if (users.size() > 0) {
+			return new ResponseEntity<Object>(users, HttpStatus.OK);
+		} else {
+			throw new ApplicationRunTimeException(HttpStatus.PRECONDITION_FAILED, ApplicationErrorCodes.DB_UNAUTHORIZED,
+					new Date(), ApplicationErrorCodes.DB_UNAUTHORIZED_MSG);
+		}
 	}
 
 	// add by anu

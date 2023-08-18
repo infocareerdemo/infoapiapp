@@ -2,16 +2,11 @@ package com.info.restcontroller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import org.springframework.mail.SimpleMailMessage;
-//import org.springframework.mail.javamail.JavaMailSender;
-//import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
 
-//import jakarta.mail.MessagingException;
-//import jakarta.mail.internet.MimeMessage;
 
 @RestController
 @RequestMapping("/email")

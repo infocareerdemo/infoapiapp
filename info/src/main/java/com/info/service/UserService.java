@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +30,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.info.dto.UsersDto;
 import com.info.entity.UserKYC;
 import com.info.entity.Users;
 import com.info.exception.ApplicationErrorCodes;
@@ -65,6 +67,9 @@ public class UserService {
 
 	@Autowired
 	UserKYCRepository userKYCRepository;
+	
+	@Autowired
+	JdbcTemplate jdbcTemplate;
 
 	@Value("${spring.mail.username}")
 	private String fromAddrs;
@@ -276,6 +281,17 @@ public class UserService {
 		return entity;
 	}
 
+	public List<UsersDto> getAllUsersList() {
+        String sql = "SELECT id, username, email FROM users";
+        return jdbcTemplate.query(sql, (resultSet, rowNum) -> {
+            UsersDto user = new UsersDto();
+            user.setId(resultSet.getInt("id"));
+            user.setUsername(resultSet.getString("username"));
+            user.setEmail(resultSet.getString("email"));
+            return user;
+        });
+    }
+	
 	// add by anu
 
 	public Users save(Users users) {

@@ -5,6 +5,8 @@ management:
       exposure:
         include:
         - "*"
-        
+spring:
+  profiles:
+      active: localhost        
         
         
