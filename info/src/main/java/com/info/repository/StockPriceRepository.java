@@ -41,4 +41,48 @@ public interface StockPriceRepository extends JpaRepository<StockPrice, Integer>
 	
 	@Query("SELECT sp FROM StockPrice sp WHERE CONCAT(sp.spsymbol,' ') ILIKE %?1%")
     public List<StockPrice> searchSymbol(String symbol);
+	
+	
+	/*@Query("SELECT sp FROM StockPrice sp WHERE sp.spsymbol IN " +
+		       "(SELECT DISTINCT sps.spsymbol FROM StockPrice sps WHERE CONCAT(sps.spsymbol, ' ') ILIKE %?1%)")
+		List<StockPrice> getUniqueSpSymbol(@Param(value = "spsymbol") String spsymbol);*/
+
+	 /*@Query("SELECT DISTINCT sp.spsymbol FROM StockPrice sp WHERE CONCAT(sp.spsymbol, ' ') ILIKE %?1%")
+	    List<StockPrice> getUniqueSpSymbol(String spsymbol);*/
+	
+	/* @Query("SELECT sp FROM StockPrice sp WHERE sp.spsymbol IN " +
+	         "(SELECT DISTINCT sps.spsymbol FROM StockPrice sps WHERE CONCAT(sps.spsymbol, ' ') ILIKE %?1%)")
+	    
+	    
+	
+	
+			
+	/*@Query("SELECT DISTINCT sp FROM StockPrice sp WHERE sp.spsymbol IN " +
+	          "(SELECT DISTINCT sp.spsymbol FROM StockPrice sp WHERE CONCAT(sp.spsymbol, ' ') ILIKE %?1%)")*/
+	/* @Query("SELECT sp FROM StockPrice sp " +
+	           "WHERE sp.spsymbol = :spsymbol " +
+	           "ORDER BY sp.id ASC")*/
+	  // List<StockPrice> getUniqueSpSymbol(@Param(value = "spsymbol") String spsymbol);
+	
+//	@Query("SELECT sp FROM StockPrice sp " +
+//	           "WHERE sp.spsymbol = :spsymbol " +
+//	           "ORDER BY sp.id ASC") 
+	
+//	   @Query(value = "SELECT * FROM stock_price WHERE spsymbol LIMIT 1")		
+//	   StockPrice getUniqueSpSymbol(@Param(value = "spsymbol") String spsymbol);
+	   
+	
+	
+	 /*  @Query(value = "SELECT * FROM stock_price WHERE spsymbol = :spsymbol ORDER BY spid LIMIT 1", nativeQuery = true)
+	   StockPrice getUniqueSpSymbol(@Param(value = "spsymbol") String spsymbol);*/
+	
+	/* @Query(value = "SELECT DISTINCT ON (spsymbol) * FROM stock_price WHERE spsymbol = :spsymbol ORDER BY spsymbol, spid", nativeQuery = true)
+	 StockPrice getUniqueSpSymbol(@Param(value = "symbol") String symbol);*/
+
+	 @Query(value = "SELECT DISTINCT ON (spsymbol) * FROM stock_price WHERE spsymbol = :symbol ORDER BY spsymbol, spid", nativeQuery = true)
+	 List<StockPrice> getUniqueSpSymbol(@Param(value = "symbol") String symbol);
+
+	 List<StockPrice> findBySpsymbol(String spSym);
+
+
 }

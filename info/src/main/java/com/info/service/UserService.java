@@ -300,6 +300,7 @@ public class UserService {
 		return usersEntity;
 	}
 
+	
 	public Users getUserDetails(int id, Users userDetails) {
 		// TODO Auto-generated method stub
 		Optional<Users> userId = userRepository.findById(userDetails.getId());
@@ -334,3 +335,22 @@ public class UserService {
 	}
 
 }
+
+
+/*@Controller
+public class WebSocketController {
+
+    @Autowired
+    private UserService userService; // Inject your user service
+
+    @MessageMapping("/updateUser")
+    @SendTo("/topic/user-updates")
+    public User updateUser(User updatedUser) {
+        // Update user in the database
+        User savedUser = userService.updateUser(updatedUser);
+
+        // Send the updated user data to connected clients
+        return savedUser;
+    }
+}*/
+

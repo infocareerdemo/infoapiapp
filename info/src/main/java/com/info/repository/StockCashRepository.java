@@ -16,8 +16,15 @@ public interface StockCashRepository extends JpaRepository<StockCash, Integer> {
 
 	List<StockCash> findBySeriesAndTimestamp(String series, String timestamp);
 
+	
 	// add by anu
 
 	@Query(value = "SELECT * FROM stock_cash sc where sc.symbol=:symbolname", nativeQuery = true)
 	List<StockCash> getAllRelianceData(@Param(value = "symbolname") String symbolname);
+
+	
+	@Query(value = "SELECT * FROM stock_cash sc WHERE symbol = :symbol AND timestamp = (SELECT MAX(timestamp) FROM stock_cash WHERE symbol =:symbol)",nativeQuery = true)
+	List<StockCash> findBySymbol(@Param(value = "symbol")String symbol);
+	       
+    
 }

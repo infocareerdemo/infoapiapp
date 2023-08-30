@@ -35,4 +35,9 @@ public class StockCashService {
 		return stockCashRepository.getAllRelianceData(symbolname);
 	}
 
+	public List<StockCash> getStockCashSymbol(String symbol) {
+		List<StockCash> stockList =  stockCashRepository.findBySymbol(symbol);
+    	return stockList;
+		
+	}
 }

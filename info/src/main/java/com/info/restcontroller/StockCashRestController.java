@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,12 @@ public class StockCashRestController {
 	  @GetMapping("/reliancedata") 
 	  public List<StockCash> getreliancedata(@RequestParam String symbolname) {
 		  return service.getreliancedata(symbolname); 
-		  }	 
+		  }	
+	  
+	  @PostMapping("/getStockCashSymbol")
+		 public List<StockCash> getStockCashSymbol(@RequestParam("symbol") String symbol){
+			 return service.getStockCashSymbol(symbol);
+		 }
+		 	
 
 }

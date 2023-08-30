@@ -64,7 +64,14 @@ public class StockPriceRestController {
 //		return new ResponseEntity<Object>(service.updateStock(null, null), HttpStatus.OK);
 //
 //	}
+
 	
-	
+
+	 
+	 @GetMapping("/getAllStockPriceList")
+	 public ResponseEntity<List<StockPrice>> getAllStockPriceList() {
+	     List<StockPrice> stockPrices = service.getAllStockPriceList();
+	     return new ResponseEntity<>(stockPrices, HttpStatus.OK);
+	 }
 
 }

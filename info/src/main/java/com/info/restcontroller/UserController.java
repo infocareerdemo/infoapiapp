@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,6 +54,10 @@ public class UserController {
 
 	@Autowired
 	JwtUtil jwtUtil;
+	
+	 @Autowired
+	 private SimpMessagingTemplate messagingTemplate;
+	 
 
 	Logger log = LoggerFactory.getLogger(UserController.class);
 
@@ -164,13 +171,35 @@ public class UserController {
 		return userService.save(users);
 	}
 
-	// update users
+/*	// update users
 	@PostMapping("/updateUser")
 	public ResponseEntity<Users> updateUser(@RequestParam int id, @RequestBody Users userDetails) {
 
 		return new ResponseEntity<Users>(userService.getUserDetails(id, userDetails), HttpStatus.OK);
-	}
+	}*/
+	
+	
+	
+	/*@PostMapping("/updateUser")
+	public ResponseEntity<Users> updateUser(@RequestParam int id, @RequestBody Users userDetails) {
+	    Users updatedUser = userService.getUserDetails(id, userDetails);
+	        messagingTemplate.convertAndSend("/topic/data-updates", updatedUser);
 
+	          return new ResponseEntity<Users>(updatedUser, HttpStatus.OK);
+	}*/
+
+	
+
+    @PostMapping("/updateUser")
+    public ResponseEntity<Users> updateUser(@RequestParam int id, @RequestBody Users userDetails) {
+        Users updatedUser = userService.getUserDetails(id, userDetails);
+        messagingTemplate.convertAndSend("/topic/userUpdated", updatedUser); // Broadcast the updated user
+        return new ResponseEntity<Users>(updatedUser, HttpStatus.OK);
+    }
+	
+		
+	
+	
 	// delete users
 	@DeleteMapping("/deleteUser")
 	public String deleteUser(@RequestParam int id) {

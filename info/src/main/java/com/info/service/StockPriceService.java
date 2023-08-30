@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -119,4 +120,31 @@ public class StockPriceService {
 		return "Updated";
 	}
 
+	
+	public List<StockPrice> getAllStockPriceList() {
+        return stockPriceRepository.findAll(); 
+    }
+
+//	public List<StockPrice> getUniqueSpSymbols(String spsymbol) {
+//		// TODO Auto-generated method stub
+//		return stockPriceRepository.getUniqueSpSymbol(spsymbol);
+//	}
+
+//	public StockPrice getUniqueSpSymbol(String symbol) {
+//		// TODO Auto-generated method stub
+//		 return stockPriceRepository.getUniqueSpSymbol(symbol);
+//	}
+//	
+	
+	
+//	public List<String> getDistinctSpsymbols() {
+//        return stockPriceRepository.findDistinctSpsymbols();
+//    }
+//
+//    public List<StockPrice> getDataBySymbol(String symbol) {
+//        return stockPriceRepository.findBySpsymbol(symbol);
+//    }
+//    public List<String> getAllSpsymbols() {
+//        return stockPriceRepository.findAllSpsymbols();
+//    }
 }
