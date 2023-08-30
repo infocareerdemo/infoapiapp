@@ -25,6 +25,9 @@ public interface StockCashRepository extends JpaRepository<StockCash, Integer> {
 	
 	@Query(value = "SELECT * FROM stock_cash sc WHERE symbol = :symbol AND timestamp = (SELECT MAX(timestamp) FROM stock_cash WHERE symbol =:symbol)",nativeQuery = true)
 	List<StockCash> findBySymbol(@Param(value = "symbol")String symbol);
+
+	@Query(value = "SELECT DISTINCT (symbol) FROM stock_cash ", nativeQuery = true)
+	List<String> findAllSymbols();
 	       
     
 }

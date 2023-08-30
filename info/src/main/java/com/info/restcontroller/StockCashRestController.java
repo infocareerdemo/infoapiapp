@@ -1,6 +1,7 @@
 package com.info.restcontroller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,10 +31,10 @@ public class StockCashRestController {
 		  return service.getreliancedata(symbolname); 
 		  }	
 	  
+	  
 	  @PostMapping("/getStockCashSymbol")
-		 public List<StockCash> getStockCashSymbol(@RequestParam("symbol") String symbol){
-			 return service.getStockCashSymbol(symbol);
-		 }
-		 	
+	  public Map<String, Object> getStockCashSymbol(@RequestParam("symbol") String symbol){
+		  return service.getStockCashSymbol(symbol);
+	  }
 
 }
