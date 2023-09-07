@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +27,7 @@ import lombok.NoArgsConstructor;
 public class UserKYC {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name ="user_kyc_id")
 	private int id;
 	@NotNull(message = "Firstname is Required")
 	@NotEmpty(message = "Firstname is Required")

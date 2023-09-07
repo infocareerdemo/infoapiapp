@@ -23,6 +23,7 @@ import lombok.Data;
 public class Users {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name ="users_id")
 	private int id;
 	private String username;
 	private String password;
@@ -32,7 +33,7 @@ public class Users {
 	private String verificationCode;
 	private int enabled;
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_kyc_id")
 	private UserKYC userId;
 //	@CreationTimestamp
 	@Column(name = "last_login")
