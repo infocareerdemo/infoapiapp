@@ -1,4 +1,4 @@
-<configuration>
+<configuration debug="true">
 	<!-- Other logback configurations (if any) -->
 
 
@@ -26,20 +26,85 @@
 	</appender>
 
 	<appender name="fileAppender"
-		class="ch.qos.logback.core.FileAppender">
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>log/application.log</file>
-		<append>true</append>
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%date %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily and when the file reaches 10 MegaBytes -->
+			<fileNamePattern>log/application.%d{yyyy-MM-dd}.log</fileNamePattern>
+		</rollingPolicy>
+	</appender>
+
+	<appender name="warnAppender"
+		class="ch.qos.logback.core.FileAppender">
+		<file>log/warn.log</file>
 		<encoder>
 			<pattern>%date %-5level %logger{35} - %msg%n</pattern>
 		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>WARN</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<appender name="error"
+		class="ch.qos.logback.core.FileAppender">
+		<file>log/error.log</file>
+		<encoder>
+			<pattern>%date %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<appender name="infoApp"
+		class="ch.qos.logback.core.FileAppender">
+		<file>log/info.log</file>
+		<encoder>
+			<pattern>%date %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<appender name="debugAppend"
+		class="ch.qos.logback.core.FileAppender">
+		<file>log/debug.log</file>
+		<encoder>
+			<pattern>%date %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
 	</appender>
 
 	<!-- Define the custom converter to format exceptions -->
 	<conversionRule conversionWord="ex"
 		converterClass="com.info.restcontroller.EmailController"></conversionRule>
-	<root level="INFO">
+	<root level="info">
 		<appender-ref ref="emailAppender" />
 		<appender-ref ref="fileAppender" />
 		<appender-ref ref="STDOUT" />
 	</root>
+	<logger name="com.info" level="trace" addactivity="false">
+		<appender-ref ref="warnAppender" level="WARN" />
+		<appender-ref ref="error" level="ERROR" />
+		<appender-ref ref="infoApp" level="INFO" />
+		<appender-ref ref="debugAppend" level="DEBUG" />
+	</logger>
+
 </configuration>
