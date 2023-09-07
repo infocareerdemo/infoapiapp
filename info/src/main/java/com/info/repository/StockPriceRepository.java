@@ -79,10 +79,25 @@ public interface StockPriceRepository extends JpaRepository<StockPrice, Integer>
 	/* @Query(value = "SELECT DISTINCT ON (spsymbol) * FROM stock_price WHERE spsymbol = :spsymbol ORDER BY spsymbol, spid", nativeQuery = true)
 	 StockPrice getUniqueSpSymbol(@Param(value = "symbol") String symbol);*/
 
-	 @Query(value = "SELECT DISTINCT ON (spsymbol) * FROM stock_price WHERE spsymbol = :symbol ORDER BY spsymbol, spid", nativeQuery = true)
-	 List<StockPrice> getUniqueSpSymbol(@Param(value = "symbol") String symbol);
+//	 @Query(value = "SELECT DISTINCT ON (spsymbol) * FROM stock_price WHERE spsymbol = :symbol ORDER BY spsymbol, spid", nativeQuery = true)
+//	 List<StockPrice> getUniqueSpSymbol(@Param(value = "symbol") String symbol);
 
 	 List<StockPrice> findBySpsymbol(String spSym);
+	 
+//	 @Query(value ="SELECT DISTINCT ON (spsymbol) * FROM stock_price WHERE spsymbol = :symbol AND spinstrument = :spinstrument ORDER BY spsymbol, spinstrument = 'EQ' DESC, spid", nativeQuery = true)
+//	 StockPrice findBySymbolUsingInstrument(@Param(value = "symbol") String symbol);
 
+	// @Query(value ="SELECT DISTINCT ON (spsymbol) * FROM stock_price WHERE spsymbol = :symbol AND spinstrument = :spinstrument ORDER BY spsymbol, spinstrument = 'EQ' DESC, spid", nativeQuery = true)
+	// @Query(value = "SELECT DISTINCT ON (spsymbol) * FROM stock_price WHERE spsymbol = :symbol ORDER BY spsymbol, spid", nativeQuery = true)
+	// StockPrice findBySymbolUsingInstrument(@Param("symbol") String symbol);
 
+//	 SELECT DISTINCT ON (spsymbol) *
+//	 FROM stock_price
+//	 WHERE spsymbol = 'LTI' AND spinstrument = 'EQ'
+//	 ORDER BY spsymbol, spinstrument = 'EQ' DESC, spid;
+	 
+	 @Query(value ="SELECT DISTINCT ON (spsymbol) * FROM stock_price WHERE spsymbol = :symbol AND spinstrument = 'EQ' ORDER BY spsymbol, spid", nativeQuery = true)
+	 List<StockPrice> findBySymbolUsingInstrument(@Param("symbol") String symbol);
+
+	 
 }

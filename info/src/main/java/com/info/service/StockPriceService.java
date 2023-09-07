@@ -125,6 +125,12 @@ public class StockPriceService {
         return stockPriceRepository.findAll(); 
     }
 
+	public List<StockPrice> getSymbolUsingInstrument(String symbol) {
+		// TODO Auto-generated method stub
+		List<StockPrice> symboldata = stockPriceRepository.findBySymbolUsingInstrument(symbol);
+		return symboldata;
+	}
+
 //	public List<StockPrice> getUniqueSpSymbols(String spsymbol) {
 //		// TODO Auto-generated method stub
 //		return stockPriceRepository.getUniqueSpSymbol(spsymbol);

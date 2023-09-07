@@ -73,5 +73,12 @@ public class StockPriceRestController {
 	     List<StockPrice> stockPrices = service.getAllStockPriceList();
 	     return new ResponseEntity<>(stockPrices, HttpStatus.OK);
 	 }
+	 
+	 @PostMapping("/getSymbolUsingInstrument")
+	 public List<StockPrice> getSymbolUsingInstrument(@RequestParam String symbol ){
+		List<StockPrice> symboldata = service.getSymbolUsingInstrument(symbol);
+		return symboldata;
+		 
+	 }
 
 }

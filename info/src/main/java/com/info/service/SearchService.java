@@ -39,12 +39,12 @@ public class SearchService {
 
 	}
 
-	public List<StockPrice> getUniqueSpSymbol(String symbol) {
-		if (symbol != null) {
-			return stockPriceRepository.getUniqueSpSymbol(symbol);
-		}
-		return stockPriceRepository.findAll();
-	}
+//	public List<StockPrice> getUniqueSpSymbol(String symbol) {
+//		if (symbol != null) {
+//			return stockPriceRepository.getUniqueSpSymbol(symbol);
+//		}
+//		return stockPriceRepository.findAll();
+//	}
 	
 	
 	//stockprice symbol

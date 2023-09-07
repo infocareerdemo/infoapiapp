@@ -33,11 +33,11 @@ public class SearchController {
 
     }
 	
-	 @PostMapping("/getUniqueSpSymbol")
-	  public List<StockPrice> getUniqueSpSymbol(@RequestParam("symbol") String symbol) {
-	        return searchService.getUniqueSpSymbol(symbol);
-		 
-	 }
+//	 @PostMapping("/getUniqueSpSymbol")
+//	  public List<StockPrice> getUniqueSpSymbol(@RequestParam("symbol") String symbol) {
+//	        return searchService.getUniqueSpSymbol(symbol);
+//		 
+//	 }
 	 
 	 @PostMapping("/getSymbol")
 	 public Map<String, Object> getAllSpsymb(@RequestParam("spSymb") String spSymb){
