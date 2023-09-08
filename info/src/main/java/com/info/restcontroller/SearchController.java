@@ -21,13 +21,13 @@ public class SearchController {
 	@Autowired
 	SearchService searchService;
 
-	@PostMapping("/search")
+	@GetMapping("/search")
     public List<StockPrice> searchList(@RequestParam("keyword") String keyword) {
         return searchService.searchList(keyword);
 
     }
 	
-	@PostMapping("/searchSymbol")
+	@GetMapping("/searchSymbol")
     public List<StockPrice> searchSymbol(@RequestParam("symbol") String symbol) {
         return searchService.searchSymbol(symbol);
 

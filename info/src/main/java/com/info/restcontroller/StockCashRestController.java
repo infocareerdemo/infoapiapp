@@ -32,7 +32,7 @@ public class StockCashRestController {
 		  }	
 	  
 	  
-	  @PostMapping("/getStockCashSymbol")
+	  @GetMapping("/getStockCashSymbol")
 	  public Map<String, Object> getStockCashSymbol(@RequestParam("symbol") String symbol){
 		  return service.getStockCashSymbol(symbol);
 	  }
