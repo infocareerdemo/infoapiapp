@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.info.dto.UsersDto;
 import com.info.entity.Users;
 import com.info.exception.ApplicationErrorCodes;
 import com.info.exception.ApplicationException;
@@ -155,7 +154,7 @@ public class UserController {
 
 	@GetMapping("/usersList")
 	public ResponseEntity<Object> getAllUsersList() {
-		List<UsersDto> users = userService.getAllUsersList();
+		List<Users> users = userService.getAllUsersList();
 		if (users.size() > 0) {
 			return new ResponseEntity<Object>(users, HttpStatus.OK);
 		} else {
