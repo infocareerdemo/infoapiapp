@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class CommonService {
+public class DemoJdbcTemplateService {
 	
 	 private final JdbcTemplate jdbcTemplate;
 
 	   @Autowired
-	    public CommonService(JdbcTemplate jdbcTemplate) {
+	    public DemoJdbcTemplateService(JdbcTemplate jdbcTemplate) {
 	        this.jdbcTemplate = jdbcTemplate;
 	    }
 	

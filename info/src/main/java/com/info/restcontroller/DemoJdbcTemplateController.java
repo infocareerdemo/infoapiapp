@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.info.service.CommonService;
+import com.info.service.DemoJdbcTemplateService;
 
 
 @RestController
-public class CommonController {
+public class DemoJdbcTemplateController {
 	
 	@Autowired
-	CommonService commonService;
+	DemoJdbcTemplateService commonService;
 	
 	@GetMapping("/data")
     public List<Object> getData() {
