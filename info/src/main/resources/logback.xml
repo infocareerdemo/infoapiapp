@@ -1,7 +1,7 @@
 <configuration debug="true">
-	<!-- Other logback configurations (if any) -->
 
 
+	<!-- configuration for sending logs to email -->
 	<appender name="emailAppender"
 		class="ch.qos.logback.classic.net.SMTPAppender">
 		<smtpHost>smtp.gmail.com</smtpHost>
@@ -17,7 +17,9 @@
 			<charset>UTF-8</charset>
 		</layout>
 	</appender>
-	<appender name="STDOUT"
+
+	<!-- configuration for deiplay logs on console -->
+	<appender name="STDOUTAppender"
 		class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>%date [%thread] %-5level %logger{36} - %msg%n
@@ -25,6 +27,7 @@
 		</encoder>
 	</appender>
 
+	<!-- configuration for write logs in files -->
 	<appender name="fileAppender"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>log/application.log</file>
@@ -40,6 +43,9 @@
 		</rollingPolicy>
 	</appender>
 
+	<!-- configuration for write logs in files using levels -->
+
+	<!-- configuration for write Warn logs in files -->
 	<appender name="warnAppender"
 		class="ch.qos.logback.core.FileAppender">
 		<file>log/warn.log</file>
@@ -53,7 +59,8 @@
 		</filter>
 	</appender>
 
-	<appender name="error"
+	<!-- configuration for write error logs in files -->
+	<appender name="errorAppender"
 		class="ch.qos.logback.core.FileAppender">
 		<file>log/error.log</file>
 		<encoder>
@@ -66,7 +73,8 @@
 		</filter>
 	</appender>
 
-	<appender name="infoApp"
+	<!-- configuration for write info logs in files -->
+	<appender name="infoAppender"
 		class="ch.qos.logback.core.FileAppender">
 		<file>log/info.log</file>
 		<encoder>
@@ -79,7 +87,8 @@
 		</filter>
 	</appender>
 
-	<appender name="debugAppend"
+	<!-- configuration for write debug logs in files -->
+	<appender name="debugAppender"
 		class="ch.qos.logback.core.FileAppender">
 		<file>log/debug.log</file>
 		<encoder>
@@ -93,18 +102,22 @@
 	</appender>
 
 	<!-- Define the custom converter to format exceptions -->
-	<conversionRule conversionWord="ex"
-		converterClass="com.info.restcontroller.EmailController"></conversionRule>
-	<root level="info">
+	<!-- conversionRule conversionWord="ex" converterClass="com.info.restcontroller.EmailController"></conversionRule -->
+
+	<!-- root level configuration for send email, write file and print logs on 
+		console by application's custom log level -->
+	<root level="error">
 		<appender-ref ref="emailAppender" />
 		<appender-ref ref="fileAppender" />
-		<appender-ref ref="STDOUT" />
+		<appender-ref ref="STDOUTAppender" />
 	</root>
+
+	<!-- configuration for write logs using levels in files -->
 	<logger name="com.info" level="trace" addactivity="false">
 		<appender-ref ref="warnAppender" level="WARN" />
-		<appender-ref ref="error" level="ERROR" />
-		<appender-ref ref="infoApp" level="INFO" />
-		<appender-ref ref="debugAppend" level="DEBUG" />
+		<appender-ref ref="errorAppender" level="ERROR" />
+		<appender-ref ref="infoAppender" level="INFO" />
+		<appender-ref ref="debugAppender" level="DEBUG" />
 	</logger>
 
 </configuration>
